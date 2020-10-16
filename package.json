@@ -1,6 +1,6 @@
 {
   "name": "gh-repo-utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "types": "src/index.ts",
   "author": "Devin <demitchell14@gmail.com>",
