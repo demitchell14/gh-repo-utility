@@ -1,54 +1,28 @@
 import axios from "axios";
 import * as fs from "fs";
 import {Asset, Release} from "./HTTPResponseTypes"
-
-type RepoArgs = {
-    token: string;
-    repository: string;
-};
-
-type ConvertedRelease = {
-    url: string;
-    assetsUrl: string;
-    id: number;
-    tagName: string;
-    name: string;
-    createdAt: Date;
-    publishedAt: Date;
-    assets: Array<{
-        url: string;
-        id: number;
-        name: string;
-        contentType: string;
-        state: string;
-        size: number;
-        createdAt: Date
-        updatedAt: Date
-        browserDownloadUrl: string;
-        download: (path?: string|true) => Promise<Buffer|string|undefined>;
-    }>;
-    tarballUrl: string;
-    zipballUrl: string;
-    body: string;
-}
+import { Repository as RepositoryType, RepoArgs, ConvertedRelease } from "./index.d";
 
 export default class Repository {
-    token: string;
+    token?: string;
     repository: string;
     releasesUrl: string;
+    headers: any;
 
     constructor(args: RepoArgs) {
         const { token, repository } = args;
         this.token = token;
         this.repository = repository;
         this.releasesUrl = `https://api.github.com/repos/${this.repository}/releases`;
+
+        this.headers = typeof this.token === 'string' ? {
+            Authorization: `Bearer ${this.token}`
+        } : {}
     }
 
     async getReleasesInfo(): Promise<ConvertedRelease[]> {
         const response = await axios.get<Release[]>(this.releasesUrl, {
-            headers: {
-                Authorization: `Bearer ${this.token}`
-            }
+            headers: { ...this.headers }
         });
         if (response.status === 200) {
             const releases: ConvertedRelease[] = [];
@@ -86,7 +60,7 @@ export default class Repository {
     async downloadAsset(asset: Asset, path?: string|boolean): Promise<Buffer|string|undefined> {
         const response = await axios.get(asset.url, {
             headers: {
-                Authorization: `Bearer ${this.token}`,
+                ...this.headers,
                 Accept: 'application/octet-stream'
             },
             responseType: 'arraybuffer',
