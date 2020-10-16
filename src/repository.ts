@@ -1,7 +1,38 @@
 import axios from "axios";
 import * as fs from "fs";
-import {Asset, Release} from "./HTTPResponseTypes"
-import { Repository as RepositoryType, RepoArgs, ConvertedRelease } from "./index.d";
+import {Asset, Release, Author} from "./HTTPResponseTypes"
+
+export type RepoArgs = {
+    token?: string;
+    repository: string;
+};
+
+export type ConvertedRelease = {
+    url: string;
+    assetsUrl: string;
+    id: number;
+    tagName: string;
+    name: string;
+    createdAt: Date;
+    publishedAt: Date;
+    assets: Array<{
+        url: string;
+        id: number;
+        name: string;
+        contentType: string;
+        state: string;
+        size: number;
+        createdAt: Date
+        updatedAt: Date
+        browserDownloadUrl: string;
+        download: (path?: string|true) => Promise<Buffer|string|undefined>;
+    }>;
+    tarballUrl: string;
+    zipballUrl: string;
+    body: string;
+}
+
+export { Asset, Release, Author };
 
 export default class Repository {
     token?: string;
