@@ -1,5 +1,5 @@
 {
-  "name": "gh-release-downloader",
+  "name": "gh-repo-utility",
   "version": "1.0.0",
   "main": "lib/index.js",
   "author": "Devin <demitchell14@gmail.com>",
